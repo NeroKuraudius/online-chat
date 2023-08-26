@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Online chat</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io()
+
+  </script>
+</head>
+<body>
+  <div id="msg"></div>
+  <script>
+    socket.on('connect',()=>{
+      socket.emit('Greet')
+    })
+
+    socket.on('Greet',(msg)=>{
+      document.getElementById('msg').innerText = msg
+    })
+  </script>
+</body>
+</html>
