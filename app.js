@@ -5,6 +5,7 @@ const server = Server(app)
 const socketio = require('socket.io')
 const io = socketio(server)
 
+app.use(express.static('public'))
 
 app.get('/',(req,res)=>{
   return res.sendFile(__dirname+'/app.html')

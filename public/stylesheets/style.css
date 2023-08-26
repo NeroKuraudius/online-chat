@@ -1,0 +1,48 @@
+body{
+  background-color:cornsilk;
+}
+
+.navbar-column {
+  width: 150px;
+  height: 95vh;
+  min-height: 400px;
+}
+
+.container {
+  height: 80vh;
+  width:90vw;
+  display: flex;
+}
+
+#counts{
+  font-weight: bold;
+}
+
+#members{
+  border: 3px solid lightgray;
+  border-radius: 5%;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+#members-list{
+  list-style: none;
+}
+
+#logout-btn{
+  position:absolute;
+  bottom:10vh;
+  text-align:left;
+  font-size:xx-large;
+}
+
+#line{
+  height:100vh;
+  border:1px solid gray;
+  margin:0 20px
+}
+
+#chat-container{
+  width:65vw;
+
+}
