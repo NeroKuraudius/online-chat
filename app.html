@@ -40,6 +40,7 @@
           <input type="text" name="msg" id="typing">
           <input class="btn btn-secondary" type="submit" value="送出">
         </form>
+        <p id="hint-msg" hidden>輸入欄位不得為空</p>
       </div>
     </div>
     
@@ -63,16 +64,19 @@
         event.preventDefault()
 
         const data = {}
+        const hintMsg = document.getElementById('hint-msg')
         const typing = document.getElementById('typing')
-        const children = typingBox.children
-        
-        for (let i =0; i < children.length; i++){
-          const child = children[i]
-          if (child.name !== ""){
-            data[child.name] = child.value
-          }
+        const child = typingBox.children[0]
+        if (child.value !== "" && child.value.trim() !== ""){
+          data[child.name] = child.value
+        }else{
+          hintMsg.hidden = false
         }
-        socket.emit('send',data)
+
+        if (data.msg !== undefined){
+          socket.emit('send',data)
+          hintMsg.hidden = true
+        }
         typing.value = ''
       })
 

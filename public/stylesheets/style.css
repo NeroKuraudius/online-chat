@@ -63,3 +63,10 @@ body {
 #typing {
   min-width: 55vw;
 }
+
+#hint-msg{
+  font-weight: bold;
+  color:red;
+  margin-top: 5px;
+  margin-left: 15px;
+}
