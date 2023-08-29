@@ -6,24 +6,28 @@ const socketio = require('socket.io')
 const io = socketio(server)
 
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
 
-app.get('/',(req,res)=>{
-  return res.sendFile(__dirname+'/app.html')
+app.get('/', (req, res) => {
+  return res.sendFile(__dirname + '/app.html')
 })
 
-io.on('connection',(socket)=>{
-  console.log('Hello, world!')
-
-  socket.on('Greet',()=>{
-    socket.emit('Greet','Catch you, client!')
+let onlineCounts = 0
+io.on('connection', (socket) => {
+  onlineCounts += 1
+  io.emit('online', onlineCounts)
+  
+  socket.on('send',(msg)=>{
+    io.emit('msg',msg)
   })
 
-  socket.on('disconnect',()=>{
-    console.log('Good bye, world!')
+  socket.on('disconnect', () => {
+    onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
+    io.emit("online", onlineCounts)
   })
 })
 
 const port = process.env.PORT || 3000
-server.listen(port,()=>{
+server.listen(port, () => {
   console.log(`App is listening on ${port}`)
 })

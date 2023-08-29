@@ -2,15 +2,22 @@
 <html lang="en">
 <head>
   <title>Online chat</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/stylesheets/bootstrap.css">
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <div class="container">
     <nav class="navbar-column" style="width:174px;">
-      <h5 class="mt-3" id="counts">當前人數：XX 人</h5>
+      <h5 class="my-4">
+        當前人數：
+        <span id="counts"></span> 
+        人
+      </h5>
       <div id="members">
         <ul id="members-list">
           <li>成員A</li>
@@ -19,27 +26,64 @@
         </ul>
       </div>
       <div class="btn" href="#" id="logout-btn">
-        <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa-lg" style="color: #511f3a;"></i>
+        <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa ms-5" style="color: darkslategray;"></i>
       </div>
     </nav>
 
     <div id="line"></div>
 
     <div id="chat-container">
-      <div class="mt-3" id="msg"></div>
+      <div class="mt-3 px-3 pb-2" id="msg"></div>
+      <hr/>
+      <div class="input-row">
+        <form id="typing-box">
+          <input type="text" name="msg" id="typing">
+          <input class="btn btn-secondary" type="submit" value="送出">
+        </form>
+      </div>
     </div>
     
+    <div id="line"></div>
   </div>
 
   <script>
     const socket = io()
 
-    socket.on('connect',()=>{
-      socket.emit('Greet')
-    })
+    document.addEventListener("DOMContentLoaded",()=>{
+      const counts = document.getElementById('counts')
+      const membersList = document.getElementById('members-list')
+      const typingBox = document.getElementById('typing-box')
+      const msg = document.getElementById('msg')
 
-    socket.on('Greet',(msg)=>{
-      document.getElementById('msg').innerText = msg
+      socket.on('online',(onlineCounts)=>{
+        counts.innerText = onlineCounts
+      })
+
+      typingBox.addEventListener('submit',(event)=>{
+        event.preventDefault()
+
+        const data = {}
+        const typing = document.getElementById('typing')
+        const children = typingBox.children
+        
+        for (let i =0; i < children.length; i++){
+          const child = children[i]
+          if (child.name !== ""){
+            data[child.name] = child.value
+          }
+        }
+        socket.emit('send',data)
+        typing.value = ''
+      })
+
+      socket.on('msg',(data)=>{
+        const msgBox = document.createElement("div")
+        msgBox.className="messages mt-3"
+        const singleMsg = document.createTextNode(data.msg)
+        msgBox.appendChild(singleMsg)
+        msg.appendChild(msgBox)
+        msg.scrollTop = msg.scrollHeight
+      })
     })
   </script>
 </body>
