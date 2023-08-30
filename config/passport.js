@@ -8,9 +8,9 @@ module.exports = app => {
   app.use(passport.initialize())
   app.use(passport.session())
 
-  passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, async (req, email, password, done) => {
+  passport.use(new LocalStrategy({ usernameField: 'account', passReqToCallback: true }, async (req, account, password, done) => {
     try {
-      const user = await User.findOne({ email })
+      const user = await User.findOne({ account })
       if (!user) return done(null, false, req.flash('dangerMsg', '該帳號尚未註冊'))
       const checkUser = await bcrypt.compare(password, user.password)
       if (!checkUser) return done(null, false, req.flash('dangerMsg', '帳號或密碼錯誤'))
@@ -26,7 +26,7 @@ module.exports = app => {
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findById(id)
-      done(null, user.lean())
+      done(null, user.toJSON())
     } catch (err) {
       done(err, null)
     }
