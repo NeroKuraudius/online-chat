@@ -1,15 +1,23 @@
+if (process.NODE_ENV !== 'production'){
+  require('dotenv').config()
+}
+
 const express = require('express')
 const app = express()
 const { Server } = require('http')
 const server = Server(app)
 const socketio = require('socket.io')
 const io = socketio(server)
+const exphbs = require('express-handlebars')
+
+app.engine('hbs',exphbs.engine({extname:'.hbs',defaultLayout:'index.hbs'}))
+app.set('view engine','hbs')
 
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-  return res.sendFile(__dirname + '/app.html')
+  return res.render('chat')
 })
 
 let onlineCounts = 0

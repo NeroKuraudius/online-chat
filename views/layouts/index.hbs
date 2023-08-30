@@ -2,16 +2,63 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Online Chat</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+  <title>Online chat</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-  {{{body}}}
-  
-  <script src="/javascripts/socket.js"></script>
+  {{{body}}}  
+
+  <script>
+    const socket = io()
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const counts = document.getElementById('counts')
+      const membersList = document.getElementById('members-list')
+      const typingBox = document.getElementById('typing-box')
+      const msg = document.getElementById('msg')
+
+      socket.on('online', (onlineCounts) => {
+        counts.innerText = onlineCounts
+      })
+
+      typingBox.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const data = {}
+        const hintMsg = document.getElementById('hint-msg')
+        const typing = document.getElementById('typing')
+        const child = typingBox.children[0]
+        if (child.value !== "" && child.value.trim() !== "") {
+          data[child.name] = child.value
+        } else {
+          hintMsg.hidden = false
+        }
+
+        if (data.msg !== undefined) {
+          socket.emit('send', data)
+          hintMsg.hidden = true
+        }
+        typing.value = ''
+      })
+
+      socket.on('msg', data => {
+        const msgBox = document.createElement("div")
+        msgBox.className = "messages mt-3"
+        const singleMsg = document.createTextNode(data.msg)
+        msgBox.appendChild(singleMsg)
+        msg.appendChild(msgBox)
+        msg.scrollTop = msg.scrollHeight
+      })
+    })
+  </script>
 </body>
 
 </html>

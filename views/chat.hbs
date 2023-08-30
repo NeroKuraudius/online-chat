@@ -1,1 +1,35 @@
-<h1>Hello,world!</h1>
+<div class="container">
+  <nav class="navbar-column" style="width:174px;">
+    <h5 class="my-4">
+      當前人數：
+      <span id="counts"></span>
+      人
+    </h5>
+    <div id="members">
+      <ul id="members-list">
+        <li>成員A</li>
+        <li>成員B</li>
+        <li>成員B</li>
+      </ul>
+    </div>
+    <div class="btn" href="#" id="logout-btn">
+      <i class="fa-solid fa-right-from-bracket fa-rotate-180 fa ms-5" style="color: darkslategray;"></i>
+    </div>
+  </nav>
+
+  <div id="line"></div>
+
+  <div id="chat-container">
+    <div class="mt-3 px-3 pb-2" id="msg"></div>
+    <hr />
+    <div class="input-row">
+      <form id="typing-box">
+        <input type="text" name="msg" id="typing">
+        <input class="btn btn-secondary" type="submit" value="送出">
+      </form>
+      <p id="hint-msg" hidden>輸入欄位不得為空</p>
+    </div>
+  </div>
+
+  <div id="line"></div>
+</div>
