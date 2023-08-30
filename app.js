@@ -1,6 +1,4 @@
-if (process.NODE_ENV !== 'production'){
-  require('dotenv').config()
-}
+require('./config/mongoose.js')
 
 const express = require('express')
 const app = express()
@@ -37,5 +35,5 @@ io.on('connection', (socket) => {
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {
-  console.log(`App is listening on ${port}`)
+  console.log(`App is listening on ${port}.`)
 })
