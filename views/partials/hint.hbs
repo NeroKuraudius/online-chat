@@ -1,0 +1,15 @@
+{{#if successMsg}}
+<div class="alert alert-success alert-dismissible fade show hint" role="alert">
+  {{{successMsg}}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+  </button>
+</div>
+{{/if}}
+
+{{#if dangerMsg}}
+<div class="alert alert-danger alert-dismissible fade show hint" role="alert">
+  {{{dangerMsg}}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+  </button>
+</div>
+{{/if}}

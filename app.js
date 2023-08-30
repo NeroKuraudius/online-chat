@@ -7,6 +7,7 @@ const server = Server(app)
 const socketio = require('socket.io')
 const io = socketio(server)
 const exphbs = require('express-handlebars')
+const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('./config/passport.js')
 const { authenticator } = require('./auth.js')
@@ -17,15 +18,19 @@ app.set('view engine','hbs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized:true}))
+
+passport(app)
+
 app.use(flash())
 app.use((req,res,next)=>{
   res.locals.user = req.user
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.dangerMsg = req.flash('dangerMsg')
   res.locals.successMsg = req.flash('successMsg')
+  next()
 })
 
-passport(app)
+
 
 app.get('/signin',(req,res)=>{
   return res.render('signin')

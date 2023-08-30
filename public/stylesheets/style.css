@@ -92,3 +92,8 @@ body {
 #signup-side{
   min-height: 70vh;
 }
+
+.hint{
+  text-align: center;
+  font-size:x-large;
+}
