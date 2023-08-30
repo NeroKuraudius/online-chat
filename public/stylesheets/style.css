@@ -70,3 +70,25 @@ body {
   margin-top: 5px;
   margin-left: 15px;
 }
+
+#sign-page{
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+#signin-side, #signup-side{
+  background-color: lightgrey;
+  border-radius: 3%;
+  min-width:30vw;
+  min-height: 50vh;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  
+}
+
+#signup-side{
+  min-height: 70vh;
+}

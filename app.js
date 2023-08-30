@@ -14,6 +14,10 @@ app.set('view engine','hbs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
+app.get('/signin',(req,res)=>{
+  return res.render('signin')
+})
+
 app.get('/', (req, res) => {
   return res.render('chat')
 })

@@ -7,12 +7,12 @@ const bcrypt = require('bcryptjs')
 const defaultUsers = [
   {
     account:'testUser1@test.com',
-    password: bcrypt.hash('12345678',12),
+    password: bcrypt.hashSync('12345678',12),
     name: '測試A'
   },
   {
     account:'testUser2@test.com',
-    password: bcrypt.hash('abc987',12),
+    password: bcrypt.hashSync('abc987',12),
     name: '測試B'
   }
 ]
@@ -22,10 +22,14 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 const db = mongoose.connection
 
 db.once('open',async()=>{
-  await User.create(defaultUsers)
-  console.log('userSeeders running finished!')
-  db.close()
-  process.exit()
+  try{
+    await User.create(defaultUsers)
+    console.log('userSeeders running finished!')
+    db.close()
+    process.exit()
+  }catch(err){
+    console.log('userSeeders running failed:',err)
+  }
 })
 db.on('error',(e)=>{
   console.log(e)
