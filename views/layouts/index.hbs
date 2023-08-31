@@ -15,9 +15,10 @@
 
 <body>
   {{> hint}}
-  {{{body}}}  
+  {{{body}}}
 
-  <script>
+  {{#if user}}
+  <script async>
     const socket = io()
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -26,7 +27,8 @@
       const typingBox = document.getElementById('typing-box')
       const msg = document.getElementById('msg')
 
-      socket.on('online', (onlineCounts) => {
+
+      socket.on('online', onlineCounts => {
         counts.innerText = onlineCounts
       })
 
@@ -35,10 +37,11 @@
 
         const data = {}
         const hintMsg = document.getElementById('hint-msg')
-        const typing = document.getElementById('typing')
-        const child = typingBox.children[0]
-        if (child.value !== "" && child.value.trim() !== "") {
-          data[child.name] = child.value
+        const speaker = typingBox.children[0]
+        const text = typingBox.children[1]
+        if (text.value !== "" && text.value.trim() !== "") {
+          data[speaker.name] = speaker.value
+          data[text.name] = text.value
         } else {
           hintMsg.hidden = false
         }
@@ -53,13 +56,15 @@
       socket.on('msg', data => {
         const msgBox = document.createElement("div")
         msgBox.className = "messages mt-3"
-        const singleMsg = document.createTextNode(data.msg)
+        const singleMsg = document.createElement('div')
+        singleMsg.innerText = `${data.name}： ${data.msg}`
         msgBox.appendChild(singleMsg)
         msg.appendChild(msgBox)
         msg.scrollTop = msg.scrollHeight
       })
     })
   </script>
+  {{/if}}
 </body>
 
 </html>

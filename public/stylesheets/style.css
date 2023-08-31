@@ -45,17 +45,23 @@ body {
 #chat-container {
   width: 65vw;
   height: 80vh;
-  
+
 }
 
 #msg {
   border: 1px solid lightgrey;
   border-radius: 2%;
   height: 80vh;
+  max-width: 65vw;
   overflow-y: auto;
 }
 
-#typing-box{
+.messages {
+  max-width: 65vw;
+  word-wrap:break-word
+}
+
+#typing-box {
   display: flex;
   justify-content: space-around;
 }
@@ -64,36 +70,37 @@ body {
   min-width: 55vw;
 }
 
-#hint-msg{
+#hint-msg {
   font-weight: bold;
-  color:red;
+  color: red;
   margin-top: 5px;
   margin-left: 15px;
 }
 
-#sign-page{
-  display:flex;
+#sign-page {
+  display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 
-#signin-side, #signup-side{
+#signin-side,
+#signup-side {
   background-color: lightgrey;
   border-radius: 3%;
-  min-width:30vw;
+  min-width: 30vw;
   min-height: 50vh;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  
+
 }
 
-#signup-side{
+#signup-side {
   min-height: 80vh;
 }
 
-.hint{
+.hint {
   text-align: center;
-  font-size:x-large;
+  font-size: x-large;
 }

@@ -15,15 +15,19 @@ const passport = require('passport')
 const bcrypt = require('bcryptjs')
 const User = require('./model/User.js')
 
+// view engine
 app.engine('hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'index.hbs' }))
 app.set('view engine', 'hbs')
 
+// imported module
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: true }))
 
+// passport
 signinPassport(app)
 
+// hint message
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.user = req.user
@@ -33,11 +37,35 @@ app.use((req, res, next) => {
   next()
 })
 
-
+// router
 app.get('/signin', (req, res) => {
   return res.render('signin')
 })
 app.post('/signin', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
+
+app.post('/signup', async (req, res) => {
+  const { account, name, password, passwordCheck } = req.body
+  if (!account.trim() || !name.trim() || !password.trim() || !passwordCheck.trim()) {
+    req.flash('dangerMsg', '所有欄位皆不得為空')
+    return res.redirect('/signin')
+  }
+  if (password !== passwordCheck) {
+    req.flash('dangerMsg', '兩次輸入密碼不一致')
+    return res.redirect('/signin')
+  }
+  try {
+    const registeredUser = await User.findOne({ account })
+    if (registeredUser) {
+      req.flash('dangerMsg', '該Email已註冊')
+      return res.redirect('/signin')
+    }
+    await User.create({ account, name, password: bcrypt.hashSync(password, 12) })
+    req.flash('successMsg', '註冊成功，請以新帳號登入')
+    return res.redirect('/signin')
+  } catch (err) {
+    console.log(`signup error: ${err}`)
+  }
+})
 
 app.post('/signout', authenticator, (req, res, next) => {
   req.logOut(err => {
@@ -47,34 +75,13 @@ app.post('/signout', authenticator, (req, res, next) => {
   })
 })
 
-app.post('/signup',async(req,res)=>{
-  const { account , name,password, passwordCheck} = req.body
-  if (!account.trim() || !name.trim() || !password.trim() || !passwordCheck.trim()){
-    req.flash('dangerMsg','所有欄位皆不得為空')
-    return res.redirect('/signin')
-  }
-  if (password !== passwordCheck){
-    req.flash('dangerMsg','兩次輸入密碼不一致')
-    return res.redirect('/signin')
-  }
-  try{
-    const registeredUser = await User.findOne({account})
-    if (registeredUser){
-      req.flash('dangerMsg','該Email已註冊')
-      return res.redirect('/signin')
-    }
-    await User.create({ account, name, password: bcrypt.hashSync(password,12)})
-    req.flash('successMsg','註冊成功，請以新帳號登入')
-    return res.redirect('/signin')
-  }catch(err){
-    console.log(`signup error: ${err}`)
-  }
-})
-
 app.get('/', authenticator, (req, res) => {
-  return res.render('chat')
+  const { user } = req
+  return res.render('chat', { user })
 })
 
+
+// socket
 let onlineCounts = 0
 io.on('connection', (socket) => {
   onlineCounts += 1
@@ -86,7 +93,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
-    io.emit("online", onlineCounts)
+    io.emit('online', onlineCounts)
   })
 })
 

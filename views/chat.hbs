@@ -8,9 +8,6 @@
     </h5>
     <div id="members">
       <ul id="members-list">
-        <li>成員A</li>
-        <li>成員B</li>
-        <li>成員B</li>
       </ul>
     </div>
     <form action="/signout" method="POST">
@@ -27,6 +24,7 @@
     <hr />
     <div class="input-row">
       <form id="typing-box">
+        <input type="text" name="name" value="{{user.name}}" disabled hidden>
         <input type="text" name="msg" id="typing">
         <input class="btn btn-secondary" type="submit" value="送出">
       </form>
