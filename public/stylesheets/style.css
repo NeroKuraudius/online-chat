@@ -45,7 +45,6 @@ body {
 #chat-container {
   width: 65vw;
   height: 80vh;
-
 }
 
 #msg {
@@ -85,6 +84,7 @@ body {
 
 #signin-side,
 #signup-side {
+  border: 3px solid cadetblue;
   background-color: lightgrey;
   border-radius: 3%;
   min-width: 30vw;
@@ -93,11 +93,20 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-
 }
 
 #signup-side {
+  display:inline;
   min-height: 80vh;
+}
+
+#signup{
+  margin-top: 3rem;
+}
+
+#third-login{
+  display:flex;
+  justify-content: center;
 }
 
 .hint {

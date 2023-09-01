@@ -38,6 +38,23 @@ app.use((req, res, next) => {
 })
 
 // router
+app.get('/signin/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
+app.get('/signin/facebook', passport.authenticate('facebook', {
+  scope: ['email', 'public_profile']
+}))
+app.post('/signin/facebook', authenticator, async(req, res) => {
+  const { user } = req
+  try{
+    const userData = await User.findOne({account:user.account})
+    if (userData){
+      await User.deleteOne({account:userData.account})
+      return userData
+    }
+  }catch(err){
+    console.log(`facebook delete user err: ${err}`)
+  }
+})
+
 app.get('/signin', (req, res) => {
   return res.render('signin')
 })
