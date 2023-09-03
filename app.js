@@ -10,7 +10,7 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const signinPassport = require('./config/passport.js')
-const { authenticator } = require('./auth.js')
+const { authenticator } = require('./middleware/auth.js')
 const passport = require('passport')
 const bcrypt = require('bcryptjs')
 const User = require('./model/User.js')
@@ -34,26 +34,30 @@ app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.dangerMsg = req.flash('dangerMsg')
   res.locals.successMsg = req.flash('successMsg')
+  res.locals.errorMsg = req.flash('errorMsg')
   next()
 })
 
 // router
+// FB signin
 app.get('/signin/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
 app.get('/signin/facebook', passport.authenticate('facebook', {
   scope: ['email', 'public_profile']
 }))
-
-app.get('/signin/google/callback',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/signin',failureFlash:true}))
-app.get('/signin/google',passport.authenticate('google',{
-  scope:['email','public_profile']
+// Google signin
+app.get('/signin/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
+app.get('/signin/google', passport.authenticate('google', {
+  scope: ['email', 'public_profile']
 }))
-
-
+// Github signin
+app.get('/signin/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin', failureFlashtrue: true, failWithError: true }))
+app.get('/signin/github', passport.authenticate('github', { scope: ['email', 'public_profile'] }))
+// Local signin
 app.get('/signin', (req, res) => {
   return res.render('signin')
 })
 app.post('/signin', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-
+// Signup
 app.post('/signup', async (req, res) => {
   const { account, name, password, passwordCheck } = req.body
   if (!account.trim() || !name.trim() || !password.trim() || !passwordCheck.trim()) {
@@ -77,7 +81,7 @@ app.post('/signup', async (req, res) => {
     console.log(`signup error: ${err}`)
   }
 })
-
+// Signout
 app.post('/signout', authenticator, (req, res, next) => {
   req.logOut(err => {
     if (err) return next(err)
@@ -85,7 +89,7 @@ app.post('/signout', authenticator, (req, res, next) => {
     return res.redirect('/signin')
   })
 })
-
+// Homepage
 app.get('/', authenticator, (req, res) => {
   const { user } = req
   return res.render('chat', { user })
