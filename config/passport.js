@@ -11,7 +11,11 @@ module.exports = app => {
   app.use(passport.session())
 
   // 本地登入
-  passport.use(new LocalStrategy({ usernameField: 'account', passReqToCallback: true }, async (req, account, password, done) => {
+  passport.use(new LocalStrategy({
+    usernameField: 'account',
+    passwordField: 'password',
+    passReqToCallback: true
+  }, async (req, account, password, done) => {
     try {
       const user = await User.findOne({ account })
       if (!user) return done(null, false, req.flash('dangerMsg', '該帳號尚未註冊'))
@@ -71,16 +75,13 @@ module.exports = app => {
     callbackURL: process.env.GITHUB_CALLBACK,
     profileFields: ['email', 'displayName'],
   }, async (accessToken, refreshToken, profile, done) => {
-    const { name, email } = profile._json
+    const { name, id } = profile._json
     try {
-      if (email === null) {
-        throw new Error('您的email設為未公開')
-      }
-      const user = await User.findOne({ account: email })
+      const user = await User.findOne({ account: id })
       if (user) return done(null, user)
 
       const randomPassword = Math.random().toString(36).slice(2, 12)
-      const newUser = await User.create({ name, account: email, password: bcrypt.hashSync(randomPassword, 12) })
+      const newUser = await User.create({ name, account: id, password: bcrypt.hashSync(randomPassword, 12) })
       return done(null, newUser)
     } catch (err) {
       return done(err, false)
