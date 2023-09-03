@@ -42,18 +42,12 @@ app.get('/signin/facebook/callback', passport.authenticate('facebook', { success
 app.get('/signin/facebook', passport.authenticate('facebook', {
   scope: ['email', 'public_profile']
 }))
-app.post('/signin/facebook', authenticator, async(req, res) => {
-  const { user } = req
-  try{
-    const userData = await User.findOne({account:user.account})
-    if (userData){
-      await User.deleteOne({account:userData.account})
-      return userData
-    }
-  }catch(err){
-    console.log(`facebook delete user err: ${err}`)
-  }
-})
+
+app.get('/signin/google/callback',passport.authenticate('google',{successRedirect:'/',failureRedirect:'/signin',failureFlash:true}))
+app.get('/signin/google',passport.authenticate('google',{
+  scope:['email','public_profile']
+}))
+
 
 app.get('/signin', (req, res) => {
   return res.render('signin')

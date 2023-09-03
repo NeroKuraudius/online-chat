@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const fbStrategy = require('passport-facebook').Strategy
+const googleStrategy = require('passport-google-oauth20').Strategy
 
 
 module.exports = app => {
@@ -42,6 +43,20 @@ module.exports = app => {
     }
   }
   ))
+
+  // google登入
+  passport.use(new googleStrategy({
+    clientID:process.env.GOOGLE_ID,
+    clientSecret:process.env.GOOGLE_SECRET,
+    callbackURL:process.env.GOOGLE_CALLBACK,
+    profileFields:['email','displayName']
+  },async(accessToken,refreshToken,profile,cb)=>{
+    try{
+      console.log(profile)
+    }catch(err){
+      return done(err,done)
+    }
+  }))
 
   passport.serializeUser((user, done) => {
     done(null, user.id)
