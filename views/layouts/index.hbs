@@ -18,7 +18,7 @@
   {{{body}}}
 
   {{#if user}}
-  <script async>
+  <script defer>
     const socket = io()
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -26,10 +26,33 @@
       const membersList = document.getElementById('members-list')
       const typingBox = document.getElementById('typing-box')
       const msg = document.getElementById('msg')
+      const speaker = typingBox.children[0]
 
 
+      let signinUser = speaker.value
       socket.on('online', onlineCounts => {
         counts.innerText = onlineCounts
+        socket.emit('userOn', signinUser)
+      })
+
+      socket.on('increaseUser', userList => {
+        let usersListHtml = ''
+        for (let i = 0; i < userList.length; i++) {
+          usersListHtml += `<li>${userList[i]}</li>`
+        }
+        membersList.innerHTML = usersListHtml
+      })
+
+      socket.on('decreaseUser', userList => {
+        if (userList.includes(signinUser)) {
+          userList.splice(userList.indexOf(signinUser), 1)
+        }
+        let usersListHtml = ''
+        for (let i = 0; i < userList.length; i++) {
+          usersListHtml += `<li>${userList[i]}</li>`
+        }
+        membersList.innerHTML = usersListHtml
+        io.emit('processedData',userList)
       })
 
       typingBox.addEventListener('submit', (event) => {
@@ -37,7 +60,6 @@
 
         const data = {}
         const hintMsg = document.getElementById('hint-msg')
-        const speaker = typingBox.children[0]
         const text = typingBox.children[1]
         if (text.value !== "" && text.value.trim() !== "") {
           data[speaker.name] = speaker.value

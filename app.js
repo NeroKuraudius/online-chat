@@ -93,18 +93,31 @@ app.get('/', authenticator, (req, res) => {
 
 // socket
 let onlineCounts = 0
+let onlineUsers = []
 io.on('connection', (socket) => {
   onlineCounts += 1
   io.emit('online', onlineCounts)
 
-  socket.on('send', (msg) => {
+  socket.on('userOn', user => {
+    onlineUsers.push(user)
+    io.emit('increaseUser', onlineUsers)
+    io.emit('decreaseUser', onlineUsers)
+  })
+
+  socket.on('send', msg => {
     io.emit('msg', msg)
   })
 
   socket.on('disconnect', () => {
     onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
     io.emit('online', onlineCounts)
+    io.emit('decreaseUser', onlineUsers)
   })
+})
+
+io.on('processedData', userList=>{
+  console.log(userList)
+  onlineUsers = userList
 })
 
 const port = process.env.PORT || 3000
