@@ -1,5 +1,5 @@
 # Online-Chat (簡易多人聊天室)
-![/public/images/chat-preview.jpg]([https://github.com/NeroKuraudius/Beagle-Pos-System/blob/main/public/icon/beagle-index.jpg?raw=true](https://github.com/NeroKuraudius/online-chat/blob/main/public/image/%E8%81%8A%E5%A4%A9%E5%AE%A4.jpg?raw=true))
+![/public/images/chat-preview.jpg](https://github.com/NeroKuraudius/online-chat/blob/main/public/images/chat-preview.jpg?raw=true)
 
 ## 安裝與使用
 
