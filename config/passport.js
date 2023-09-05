@@ -54,7 +54,7 @@ module.exports = app => {
     clientSecret: process.env.GOOGLE_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACK,
     profileFields: ['email', 'displayName']
-  }, async (accessToken, refreshToken, profile, cb) => {
+  }, async (accessToken, refreshToken, profile, done) => {
     const { email, name } = profile._json
     try {
       const user = await User.findOne({ account: email })
