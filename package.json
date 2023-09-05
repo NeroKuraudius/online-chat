@@ -6,6 +6,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
+  "engines": {
+      "node": ">=18"
+    },
   "author": "Nero",
   "dependencies": {
     "bcryptjs": "^2.4.3",
