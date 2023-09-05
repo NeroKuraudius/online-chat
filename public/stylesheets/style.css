@@ -113,3 +113,7 @@ body {
   text-align: center;
   font-size: x-large;
 }
+
+#user-name{
+  font-weight: bold;
+}

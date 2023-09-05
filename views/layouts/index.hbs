@@ -35,24 +35,12 @@
         socket.emit('userOn', signinUser)
       })
 
-      socket.on('increaseUser', userList => {
+      socket.on('showUsers', userList => {
         let usersListHtml = ''
         for (let i = 0; i < userList.length; i++) {
           usersListHtml += `<li>${userList[i]}</li>`
         }
         membersList.innerHTML = usersListHtml
-      })
-
-      socket.on('decreaseUser', userList => {
-        if (userList.includes(signinUser)) {
-          userList.splice(userList.indexOf(signinUser), 1)
-        }
-        let usersListHtml = ''
-        for (let i = 0; i < userList.length; i++) {
-          usersListHtml += `<li>${userList[i]}</li>`
-        }
-        membersList.innerHTML = usersListHtml
-        io.emit('processedData',userList)
       })
 
       typingBox.addEventListener('submit', (event) => {

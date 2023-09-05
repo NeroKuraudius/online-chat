@@ -98,10 +98,13 @@ io.on('connection', (socket) => {
   onlineCounts += 1
   io.emit('online', onlineCounts)
 
+  let singleUser = ''
   socket.on('userOn', user => {
-    onlineUsers.push(user)
-    io.emit('increaseUser', onlineUsers)
-    io.emit('decreaseUser', onlineUsers)
+    if (!onlineUsers.includes(user)){
+      onlineUsers.push(user)
+    }
+    singleUser = user
+    io.emit('showUsers', onlineUsers)
   })
 
   socket.on('send', msg => {
@@ -110,15 +113,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
+    if (onlineUsers.includes(singleUser)){
+      onlineUsers.splice(onlineUsers.indexOf(singleUser),1)
+    }
     io.emit('online', onlineCounts)
-    io.emit('decreaseUser', onlineUsers)
+    io.emit('showUsers', onlineUsers)
   })
 })
 
-io.on('processedData', userList=>{
-  console.log(userList)
-  onlineUsers = userList
-})
 
 const port = process.env.PORT || 3000
 server.listen(port, () => {
