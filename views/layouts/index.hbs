@@ -26,13 +26,13 @@
       const membersList = document.getElementById('members-list')
       const typingBox = document.getElementById('typing-box')
       const msg = document.getElementById('msg')
-      const speaker = typingBox.children[0]
+      const account = typingBox.children[0].value
+      const speaker = typingBox.children[1]
 
 
-      let signinUser = speaker.value
       socket.on('online', onlineCounts => {
         counts.innerText = onlineCounts
-        socket.emit('userOn', signinUser)
+        socket.emit('userOn', account)
       })
 
       socket.on('showUsers', userList => {
@@ -48,7 +48,7 @@
 
         const data = {}
         const hintMsg = document.getElementById('hint-msg')
-        const text = typingBox.children[1]
+        const text = typingBox.children[2]
         if (text.value !== "" && text.value.trim() !== "") {
           data[speaker.name] = speaker.value
           data[text.name] = text.value

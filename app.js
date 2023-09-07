@@ -87,6 +87,7 @@ app.post('/signout', authenticator, (req, res, next) => {
 // Homepage
 app.get('/', authenticator, (req, res) => {
   const { user } = req
+  delete user.password
   return res.render('chat', { user })
 })
 
@@ -98,13 +99,18 @@ io.on('connection', (socket) => {
   onlineCounts += 1
   io.emit('online', onlineCounts)
 
-  let singleUser = ''
-  socket.on('userOn', user => {
-    if (!onlineUsers.includes(user)){
-      onlineUsers.push(user)
+  let userAccount = ''
+  socket.on('userOn', account => {
+    if (!onlineUsers.includes(account)) {
+      onlineUsers.push(account)
     }
-    singleUser = user
-    io.emit('showUsers', onlineUsers)
+    const userNameList = []
+    onlineUsers.forEach(async(account) => {
+      const user = await User.findOne({ account }).lean()
+      userNameList.push(user.name)
+      userAccount = account
+      io.emit('showUsers', userNameList)
+    })
   })
 
   socket.on('send', msg => {
@@ -113,8 +119,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
-    if (onlineUsers.includes(singleUser)){
-      onlineUsers.splice(onlineUsers.indexOf(singleUser),1)
+    if (onlineUsers.includes(userAccount)) {
+      onlineUsers.splice(onlineUsers.indexOf(userAccount), 1)
     }
     io.emit('online', onlineCounts)
     io.emit('showUsers', onlineUsers)
