@@ -1,14 +1,13 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const { authenticator } = require('./middleware/auth.js')
 const bcrypt = require('bcryptjs')
 const User = require('./model/User.js')
 const signin = require('./modules/signin.js')
-const chatWith = require('./modules/chat-with')
+const chat = require('./modules/chat')
 
 // routes:
-router.use('/chat-with', chatWith)
-router.use('/signin',signin)
+router.use('/chat', authenticator, chat)
+router.use('/signin', signin)
 
 // single route:
 // signup
@@ -44,12 +43,8 @@ router.post('/signout', authenticator, (req, res, next) => {
   })
 })
 // homepage
-router.get('/', authenticator, (req, res) => {
-  const { user } = req
-  delete user.password
-  return res.render('chat', { user })
-})
 
-router.get('',(req,res)=>res.redirect('/'))
+
+router.get('', (req, res) => res.redirect('/'))
 
 module.exports = router
