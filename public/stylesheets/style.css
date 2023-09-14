@@ -29,8 +29,9 @@ body {
   list-style: none;
 }
 
-.users-name{
+.users-name {
   color: steelblue;
+  font-weight: bold;
   text-decoration: none;
 }
 
@@ -62,6 +63,7 @@ body {
 
 .messages {
   word-wrap: break-word;
+  font-size: larger;
 }
 
 #typing-box {

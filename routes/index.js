@@ -1,9 +1,9 @@
 const router = require('express').Router()
-const { authenticator } = require('./middleware/auth.js')
+const { authenticator } = require('../middleware/auth.js')
 const bcrypt = require('bcryptjs')
-const User = require('./model/User.js')
+const User = require('../model/User.js')
 const signin = require('./modules/signin.js')
-const chat = require('./modules/chat')
+const chat = require('./modules/chat.js')
 
 // routes:
 router.use('/chat', authenticator, chat)
@@ -45,6 +45,6 @@ router.post('/signout', authenticator, (req, res, next) => {
 // homepage
 
 
-router.get('', (req, res) => res.redirect('/'))
+router.get('', (req, res) => res.redirect('/signin'))
 
 module.exports = router

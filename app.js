@@ -11,6 +11,8 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const signinPassport = require('./config/passport.js')
 const routes = require('./routes')
+const User = require('./model/User.js')
+
 
 // view engine
 app.engine('hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'index.hbs' }))
