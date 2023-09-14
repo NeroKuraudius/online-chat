@@ -37,20 +37,6 @@ app.use((req, res, next) => {
 
 // routes
 app.use(routes)
-// router
-// FB signin
-app.get('/signin/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-app.get('/signin/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))
-// Google signin
-app.get('/signin/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-app.get('/signin/google', passport.authenticate('google', { scope: ['email', 'profile'] }))
-// Github signin
-app.get('/signin/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-app.get('/signin/github', passport.authenticate('github', { scope: ['email', 'public_profile'] }))
-// Local signin
-app.get('/signin', (req, res) => { return res.render('signin') })
-app.post('/signin', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-
 
 // socket
 let onlineCounts = 0
@@ -86,7 +72,6 @@ io.on('connection', (socket) => {
     io.emit('showUsers', onlineUsers)
   })
 })
-
 
 const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3000
 server.listen(port, () => {

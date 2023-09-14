@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const signinPassport = require('./config/passport.js')
 const { authenticator } = require('./middleware/auth.js')
-const passport = require('passport')
 const bcrypt = require('bcryptjs')
 const User = require('./model/User.js')
+const signin = require('./modules/signin.js')
+const chatWith = require('./modules/chat-with')
 
 // routes:
+router.use('/chat-with', chatWith)
 router.use('/signin',signin)
-router.use('/chat-with',chatWith)
 
 // single route:
 // signup
