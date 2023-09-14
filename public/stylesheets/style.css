@@ -29,6 +29,11 @@ body {
   list-style: none;
 }
 
+.users-name{
+  color: steelblue;
+  text-decoration: none;
+}
+
 #logout-btn {
   position: absolute;
   bottom: 10vh;

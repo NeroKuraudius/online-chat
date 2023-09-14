@@ -105,9 +105,9 @@ io.on('connection', (socket) => {
       onlineUsers.push(account)
     }
     const userNameList = []
-    onlineUsers.forEach(async(account) => {
+    onlineUsers.forEach(async (account) => {
       const user = await User.findOne({ account }).lean()
-      userNameList.push(user.name)
+      userNameList.push({ account, name: user.name, id: user._id })
       userAccount = account
       io.emit('showUsers', userNameList)
     })

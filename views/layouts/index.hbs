@@ -38,11 +38,15 @@
       socket.on('showUsers', userList => {
         let usersListHtml = ''
         for (let i = 0; i < userList.length; i++) {
-          usersListHtml += `<li>${userList[i]}</li>`
+          usersListHtml += 
+          `
+          <li class="mt-3">
+            <a class="users-name" type="button" href="/chat-with/${userList[i].id}" onclick="return confirm('確定要與該使用者交談嗎')"}>${userList[i].name}</a>
+          </li>
+          `
         }
         membersList.innerHTML = usersListHtml
       })
-
       typingBox.addEventListener('submit', (event) => {
         event.preventDefault()
 
