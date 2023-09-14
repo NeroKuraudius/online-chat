@@ -1,11 +1,7 @@
 const router = require('express').Router()
-const chatControll = require('../../controller/chatController')
+const chatController = require('../../controller/chat')
 
-router.get('/:id', chatControll.oneOnOne)
-router.get('/', (req, res) => {
-  const { user } = req
-  delete user.password
-  return res.render('chat', { user })
-})
+router.get('/:id', chatController.oneOnOne)
+router.get('/', chatController.normalChat)
 
 module.exports = router

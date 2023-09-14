@@ -12,8 +12,7 @@ router.get('/google', passport.authenticate('google', { scope: ['email', 'profil
 router.get('/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
 router.get('/github', passport.authenticate('github', { scope: ['email', 'public_profile'] }))
 // Local signin
-router.get('/', (req, res) => { return res.render('signin') })
 router.post('/', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/signin', failureFlash: true }))
-
+router.get('/', (req, res) => { return res.render('signin') })
 
 module.exports = router
