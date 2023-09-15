@@ -6,6 +6,7 @@ const chatController = {
   },
   oneOnOne: (req, res) => {
     const { user } = req
+    const { Aid, Pid } = req.params
     delete user.password
     return res.render('privateChat', { user })
   }

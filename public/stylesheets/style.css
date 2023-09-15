@@ -123,3 +123,13 @@ body {
 #user-name {
   font-weight: bold;
 }
+
+#leave-chat{
+  position: absolute;
+  bottom: 10vh;
+  color:crimson;
+  font-weight: bold;
+  padding:5px;
+  border:2px solid crimson;
+  border-radius: 8px;
+}

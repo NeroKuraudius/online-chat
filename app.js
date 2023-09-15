@@ -55,7 +55,8 @@ io.on('connection', (socket) => {
     const userNameList = []
     onlineUsers.forEach(async (account) => {
       const user = await User.findOne({ account }).lean()
-      userNameList.push({ account, name: user.name, id: user._id })
+      delete user.password
+      userNameList.push({ account,name: user.name, id: user._id })
       userAccount = account
       io.emit('showUsers', userNameList)
     })

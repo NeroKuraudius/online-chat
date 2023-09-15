@@ -1,0 +1,30 @@
+<div class="container">
+  {{> hint}}
+  <nav class="navbar-column" style="width:174px;">
+    <h5 class="mt-4" id="user-name">嗨! {{user.name}}</h5>
+    <h4 class="mt-5">與 的</h4>
+    <h4>私人聊天室</h4>
+    <button class="btn" type="submit" onclick="if (confirm('確定要離開嗎?')) return window.close()">
+      <h5 id="leave-chat">離開聊天室</h5>
+    </button>
+  </nav>
+
+  <div id="line"></div>
+
+  <div id="chat-container">
+    <div class="mt-3 px-3 pb-2" id="msg"></div>
+    <hr />
+    <div class="input-row">
+      <form id="typing-box">
+        <input type="text" name="account" value="{{user.account}}" disabled hidden>
+        <input type="text" name="name" value="{{user.name}}" disabled hidden>
+        <input type="text" name="id" value="{{user._id}}" disabled hidden>
+        <input type="text" name="msg" id="typing">
+        <input class="btn btn-secondary" type="submit" value="送出">
+      </form>
+      <p id="hint-msg" hidden>輸入欄位不得為空</p>
+    </div>
+  </div>
+
+  <div id="line"></div>
+</div>
