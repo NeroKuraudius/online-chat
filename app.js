@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
   onlineCounts += 1
   io.emit('online', onlineCounts)
 
-  let userAccount = ''
+  let userAccount, userId
   socket.on('userOn', account => {
     if (!onlineUsers.includes(account)) {
       onlineUsers.push(account)
@@ -56,11 +56,23 @@ io.on('connection', (socket) => {
     onlineUsers.forEach(async (account) => {
       const user = await User.findOne({ account }).lean()
       delete user.password
-      userNameList.push({ account,name: user.name, id: user._id })
+      userNameList.push({ account, name: user.name, id: user._id })
       userAccount = account
+      userId = user._id
       io.emit('showUsers', userNameList)
     })
   })
+
+  socket.on('participateChat', async (data) => {
+    const userA = await User.findById(data.Aid)
+    const userB = await User.findById(data.Pid)
+    delete userA.password
+    delete userB.password
+    socket.join(userId)
+    io.to(userId).emit('showParticipator', { userA, userB })
+  })
+
+
 
   socket.on('send', msg => {
     io.emit('msg', msg)
