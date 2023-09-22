@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  db:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./tep/data/db:/data/db
+  
+  app:
+    # 告知從何處建立image:
+    build: 
+      # 路徑:
+      context: ./ 
+      # 檔案名稱:
+      dockerfile: Dockerfile 
+
+    # 共享資料(類似nodemon)
+    volumes: 
+      - ./:/app
+      #因node_modules被.dockerignore忽略了，需要重新掛載以對應套件:
+      - /app/node_modules 
+    ports:
+      - "3000:3000"
+    # 依賴關係: compose會先執行depends_on中的內容:
+    depends_on:
+      - db
+    environment:
+      MONGODB_URI: SKIP
+      SECRET: SKIP
+      FB_ID: SKIP
+      FB_SECRET: SKIP
+      FB_CALLBACK: SKIP
+      GOOGLE_ID: SKIP
+      GOOGLE_SECRET: SKIP
+      GOOGLE_CALLBACK: SKIP
+      GITHUB_ID: SKIP
+      GITHUB_SECRET: SKIP
+      GITHUB_CALLBACK: SKIP
+
+    # compose 執行參數
+
+    # 對應docker指令為 -t:讓使用者可以進入容器操作
+    tty: true 
+    # 對應docker指令為 -i:讓使用者可以輸入指令
+    stdin_open: true 
