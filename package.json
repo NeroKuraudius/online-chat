@@ -1,14 +1,11 @@
 {
   "name": "online-chat",
   "version": "1.0.0",
-  "main": "app.js",
+  "main":"app.js",
+  "engines":"18.17.0",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node app.js"
   },
-  "engines": {
-      "node": ">=18 <19"
-    },
   "author": "Nero",
   "dependencies": {
     "bcryptjs": "^2.4.3",
