@@ -1,8 +1,11 @@
 {
   "name": "online-chat",
   "version": "1.0.0",
-  "main":"app.js",
-  "engines":"18.17.0",
+  "main": "app.js",
+  "private": true,
+  "engines": {
+    "node": "18.12.1"
+  },
   "scripts": {
     "start": "node app.js"
   },
