@@ -1,13 +1,14 @@
 {
   "name": "online-chat",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "main": "app.js",
   "private": true,
   "engines": {
     "node": "18.12.1"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Nero",
   "dependencies": {

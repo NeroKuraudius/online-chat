@@ -2,13 +2,17 @@ require('./config/mongoose.js')
 
 const express = require('express')
 const app = express()
+
 const { Server } = require('http')
 const server = Server(app)
+
 const socketio = require('socket.io')
 const io = socketio(server)
+
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+
 const signinPassport = require('./config/passport.js')
 const routes = require('./routes')
 const User = require('./model/User.js')
@@ -33,7 +37,6 @@ app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.dangerMsg = req.flash('dangerMsg')
   res.locals.successMsg = req.flash('successMsg')
-  res.locals.errorMsg = req.flash('errorMsg')
   next()
 })
 
@@ -48,43 +51,54 @@ io.on('connection', (socket) => {
   io.emit('online', onlineCounts)
 
   let userAccount, userId
-  socket.on('userOn', account => {
+  socket.on('userOn', async(account) => {
     if (!onlineUsers.includes(account)) {
       onlineUsers.push(account)
     }
-    const userNameList = []
-    onlineUsers.forEach(async (account) => {
+
+    const userPromises = onlineUsers.map( async(account)=>{
       const user = await User.findOne({ account }).lean()
-      delete user.password
-      userNameList.push({ account, name: user.name, id: user._id })
-      userAccount = account
-      userId = user._id
-      io.emit('showUsers', userNameList)
+      if (user){
+        delete user.password
+        return { account, name: user.name, id: user._id }
+      }
     })
+
+    const userNameList = (await Promise.all(userPromises)).filter(Boolean)
+    io.emit('showUsers', userNameList)
   })
 
   socket.on('participateChat', async (data) => {
-    const userA = await User.findById(data.Aid)
-    const userB = await User.findById(data.Pid)
+    const userA = await User.findById(data.Aid).lean()
+    const userB = await User.findById(data.Pid).lean()
     delete userA.password
     delete userB.password
-    socket.join(userId)
-    io.to(userId).emit('showParticipator', { userA, userB })
+
+    const roomId = [data.Aid, data.Pid].sort().join('/')
+    socket.join(roomId)
+    io.to(roomId).emit('showParticipator', { userA, userB })
   })
 
+  // socket.on('send', msg => {
+  //   io.emit('msg', msg)
+  // })
 
+  socket.on('disconnect', async() => {
+    onlineCounts = Math.max(0 ,onlineCounts-1)
+    const leftUserIndex = onlineUsers.indexOf(userAccount)
+    if (leftUserIndex !== -1) onlineUsers.splice(leftUserIndex,1)
 
-  socket.on('send', msg => {
-    io.emit('msg', msg)
-  })
+    const userPromises = onlineUsers.map(async (account) => {
+      const user = await User.findOne({ account }).lean()
+      if (user) {
+        delete user.password
+        return { account, name: user.name, id: user._id }
+      }
+    })
+    const userNameList = (await Promise.all(userPromises)).filter(Boolean)
 
-  socket.on('disconnect', () => {
-    onlineCounts = onlineCounts < 0 ? 0 : onlineCounts -= 1
-    if (onlineUsers.includes(userAccount)) {
-      onlineUsers.splice(onlineUsers.indexOf(userAccount), 1)
-    }
     io.emit('online', onlineCounts)
-    io.emit('showUsers', onlineUsers)
+    io.emit('showUsers', userNameList)
   })
 })
 

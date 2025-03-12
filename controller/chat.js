@@ -11,6 +11,11 @@ const chatController = {
     const { Aid, Pid } = req.params
     delete user.password
     return res.render('privateChat', { user, Aid, Pid })
+  },
+  toAI: async(req,res)=>{
+    const { user } = req
+
+    return res.render('aiChat', { user })
   }
 }
 

@@ -133,3 +133,12 @@ body {
   border:2px solid crimson;
   border-radius: 8px;
 }
+
+#AI-button{
+  font-size:14px;
+  font-weight: bold;
+  color:brown;
+  background-color: azure;
+  border:none;
+  border-radius: 8px;
+}
