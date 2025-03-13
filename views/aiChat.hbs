@@ -34,21 +34,15 @@
   const socket = io()
 
   document.addEventListener("DOMContentLoaded", () => {
-    const id = document.getElementById('user-id').value
-    const userName = document.getElementById('user-name').value
+    const typingBox = document.getElementById('typing-box')
+    const msg = document.getElementById('msg')
+    const account = typingBox.children[0].value
+    const speaker = typingBox.children[1]
+    const id = typingBox.children[2].value
+
+    
 
 
-    socket.io('showParticipator', data=>{
-      if (data.userA.name === userName){
-        chatPerson.innerText = `
-        與 ${data.userA.name} 的
-        `
-      }else{
-        chatPerson.innerText = `
-        與 ${data.userB.name} 的
-        `
-      }
-    })
   })
 </script>
 {{/if}}

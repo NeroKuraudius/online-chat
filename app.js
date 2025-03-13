@@ -49,12 +49,15 @@ io.on('connection', (socket) => {
   io.emit('online')
 
   let userAccount
-  socket.on('userOn', async(account) => {
-    if (!onlineUsers.includes(account)) {
-      onlineUsers.push(account)
+  socket.on('userOn', async(loginUser) => {
+    if (!onlineUsers.includes(loginUser.account)) {
+      onlineUsers.push(loginUser.account)
+
+      const systemInfo = { name:'系統', msg:`${loginUser.name}上線囉，快來和他打招呼吧！`}
+      io.emit('msg',systemInfo)
     }
 
-    userAccount = account
+    userAccount = loginUser.account
     const userNameList = await gatherOnlineUsersName(onlineUsers)
 
     io.emit('showUsers', userNameList)

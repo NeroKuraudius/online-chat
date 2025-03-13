@@ -58,7 +58,8 @@
 
 
     socket.on('online', () => {
-      if (account) socket.emit('userOn', account)
+      const loginUser = { account , name: speaker.value}
+      if (account) socket.emit('userOn', loginUser)
     })
 
     socket.on('showUsers', userList => {
@@ -114,6 +115,10 @@
         msgBox.className = "messages mt-3"
         msgBox.style = "text-align:end;width:100%"
         singleMsg.innerText = `${data.msg}`
+      } else if (data.name === '系統'){
+        msgBox.className = "messages mt-3"
+        msgBox.style = "width:100%;color:lightgray"
+        singleMsg.innerText = `${data.name}： ${data.msg}`
       } else {
         msgBox.className = "messages mt-3"
         msgBox.style = "width:100%"
