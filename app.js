@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 // routes
 app.use(routes)
 
-// socket
+// socket for public
 let onlineUsers = []
 io.on('connection', (socket) => {
   io.emit('online')
@@ -100,6 +100,36 @@ io.on('connection', (socket) => {
     const newList = (await Promise.all(userPromises)).filter(Boolean)
     return newList
   }
+})
+// socket for private
+const OpenAI = require('openai')
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
+const aiChat = io.of('/ai-chat')
+const userConversations = {}
+aiChat.on('connection',(socket)=>{
+  userConversations[socket.id] = []
+
+  socket.on('private-message', async( {msg} )=>{
+    userConversations[socket.id].push({ role: 'user', content: msg })
+    try{
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5',
+        messages: userConversations[socket.id],
+      })
+
+      const aiReply = response.choices[0].message.content
+      userConversations[socket.id].push({ role:'assistant', content: aiReply })
+
+      socket.emit('ai-response',{ role:'assistant', reply: aiReply })
+    }catch(err){
+      console.log('Error on aiChat connection:', err)
+    }
+  })
+
+  socket.on('disconnect',()=>{
+    console.log(`User ${socket.id} disconnected from AI chat`)
+    delete userConversations[socket.id]
+  })
 })
 
 const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3000

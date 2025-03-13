@@ -16,9 +16,6 @@
     <hr />
     <div class="input-row">
       <form id="typing-box">
-        <input type="text" name="account" value="{{user.account}}" disabled hidden>
-        <input type="text" name="name" value="{{user.name}}" disabled hidden>
-        <input type="text" name="id" value="{{user._id}}" disabled hidden>
         <input type="text" name="msg" id="typing">
         <input class="btn btn-secondary" type="submit" value="送出">
       </form>
@@ -31,18 +28,48 @@
 
 {{#if user}}
 <script defer>
-  const socket = io()
+  const socket = io('/ai-chat')
 
   document.addEventListener("DOMContentLoaded", () => {
     const typingBox = document.getElementById('typing-box')
     const msg = document.getElementById('msg')
-    const account = typingBox.children[0].value
-    const speaker = typingBox.children[1]
-    const id = typingBox.children[2].value
 
-    
+    typingBox.addEventListener('submit', async(event) => {
+      event.preventDefault()
 
+      const data = {}
+      const hintMsg = document.getElementById('hint-msg')
+      const text = typingBox.children[0]
+      if (text.value !== "" && text.value.trim() !== "") {
+        data[text.name] = text.value
+      } else {
+        hintMsg.hidden = false
+      }
 
+      if (data.msg !== undefined) {
+        socket.emit('private-message', data)
+        hintMsg.hidden = true
+      }
+      text.value = ''
+    })
+
+    socket.on('ai-response',data=>{
+      const msgBox = document.createElement("div")
+      const singleMsg = document.createElement('div')
+
+      if (data?.role === 'assistant') { // if data存在但沒有role?
+        msgBox.className = "messages mt-3"
+        msgBox.style = "width:100%"
+        singleMsg.innerText = `${data.reply}`
+      } else {
+        msgBox.className = "messages mt-3"
+        msgBox.style = "text-align:end;width:100%"
+        singleMsg.innerText = `${data.reply}`
+      }
+
+      msgBox.appendChild(singleMsg)
+      msg.appendChild(msgBox)
+    })
   })
 </script>
 {{/if}}
