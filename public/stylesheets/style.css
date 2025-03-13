@@ -134,11 +134,30 @@ body {
   border-radius: 8px;
 }
 
+.end-bar{
+  min-width:80px;
+  display: block;
+  justify-content: center;
+}
+
+.nobodyHere{
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color:navy
+}
+
+.buttonList{
+  list-style: none;
+}
+
 #AI-button{
+  padding:3px;
   font-size:14px;
   font-weight: bold;
-  color:brown;
-  background-color: azure;
+  color: #5AD7FA;;
+  background-color: #69777A;
   border:none;
   border-radius: 8px;
+  text-decoration: none;
 }
