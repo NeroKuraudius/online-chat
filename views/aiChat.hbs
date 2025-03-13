@@ -2,9 +2,8 @@
   {{> hint}}
   <nav class="navbar-column" style="width:174px;">
     <h5 class="mt-4" id="user-name" value="{{user.name}}">嗨! {{user.name}}</h5>
-    <h4 class="mt-5" id="chatPerson"></h4>
     <h4>智能聊天室</h4>
-    <input id="Aid" type="text" name="id" value="{{user._id}}" disabled hidden>
+    <input id="user-id" type="text" name="id" value="{{user._id}}" disabled hidden>
     <button class="btn" type="submit" onclick="if (confirm('確定要離開嗎?')) return window.close()">
       <h5 id="leave-chat">離開聊天室</h5>
     </button>
@@ -36,12 +35,9 @@
   const socket = io()
 
   document.addEventListener("DOMContentLoaded", () => {
-    const Aid = document.getElementById('Aid').value
-    const Pid = document.getElementById('Pid').value
+    const id = document.getElementById('user-id').value
     const userName = document.getElementById('user-name').value
-    const chatPerson = document.getElementById('chatPerson')
 
-    socket.emit('participateChat', { Aid, Pid })
 
     socket.io('showParticipator', data=>{
       if (data.userA.name === userName){

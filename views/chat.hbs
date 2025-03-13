@@ -84,7 +84,7 @@
       membersList.innerHTML = usersListHtml
     })
 
-    typingBox.addEventListener('submit', (event) => {
+    typingBox.addEventListener('submit', async(event) => {
       event.preventDefault()
 
       const data = {}
@@ -98,15 +98,17 @@
       }
 
       if (data.msg !== undefined) {
-        showMsg(data)
+        socket.emit('send', data)
         hintMsg.hidden = true
       }
       text.value = ''
     })
 
-    function showMsg(data){
+
+    socket.on('msg',data=>{
       const msgBox = document.createElement("div")
       const singleMsg = document.createElement('div')
+
       if (data.name === speaker.value) {
         msgBox.className = "messages mt-3"
         msgBox.style = "text-align:end;width:100%"
@@ -116,11 +118,11 @@
         msgBox.style = "width:100%"
         singleMsg.innerText = `${data.name}： ${data.msg}`
       }
+
       msgBox.appendChild(singleMsg)
       msg.appendChild(msgBox)
-      msg.scrollTop = msg.scrollHeight
-    }
-
-  })
+    })
+      
+})
 </script>
 {{/if}}

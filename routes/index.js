@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 
 const { authenticator } = require('../middleware/auth.js')
 
-const User = require('../model/User.js')
+const User = require('../models/User.js')
 const signin = require('./modules/signin.js')
 const chat = require('./modules/chat.js')
 

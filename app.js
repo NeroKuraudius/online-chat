@@ -15,7 +15,7 @@ const flash = require('connect-flash')
 
 const signinPassport = require('./config/passport.js')
 const routes = require('./routes')
-const User = require('./model/User.js')
+const User = require('./models/User.js')
 
 
 // view engine
@@ -50,21 +50,15 @@ io.on('connection', (socket) => {
   onlineCounts += 1
   io.emit('online', onlineCounts)
 
-  let userAccount, userId
+  let userAccount
   socket.on('userOn', async(account) => {
     if (!onlineUsers.includes(account)) {
       onlineUsers.push(account)
     }
 
-    const userPromises = onlineUsers.map( async(account)=>{
-      const user = await User.findOne({ account }).lean()
-      if (user){
-        delete user.password
-        return { account, name: user.name, id: user._id }
-      }
-    })
+    userAccount = account
+    const userNameList = await gatherOnlineUsersName(onlineUsers)
 
-    const userNameList = (await Promise.all(userPromises)).filter(Boolean)
     io.emit('showUsers', userNameList)
   })
 
@@ -79,27 +73,35 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('showParticipator', { userA, userB })
   })
 
-  // socket.on('send', msg => {
-  //   io.emit('msg', msg)
-  // })
+  socket.on('send', msg => {
+    io.emit('msg', msg)
+  })
 
   socket.on('disconnect', async() => {
     onlineCounts = Math.max(0 ,onlineCounts-1)
     const leftUserIndex = onlineUsers.indexOf(userAccount)
     if (leftUserIndex !== -1) onlineUsers.splice(leftUserIndex,1)
-
-    const userPromises = onlineUsers.map(async (account) => {
-      const user = await User.findOne({ account }).lean()
-      if (user) {
-        delete user.password
-        return { account, name: user.name, id: user._id }
-      }
-    })
-    const userNameList = (await Promise.all(userPromises)).filter(Boolean)
-
+    
+    const userNameList = await gatherOnlineUsersName(onlineUsers)
+    
     io.emit('online', onlineCounts)
     io.emit('showUsers', userNameList)
   })
+
+  // ============================================//
+  async function gatherOnlineUsersName(userArray){
+    const userPromises = userArray.map(async (account) => {
+      const user = await User.findOne({ account }).lean()
+      if (user) {
+          delete user.password
+          return { account, name: user.name, id: user._id }
+      }
+      return null
+    })
+
+    const newList = (await Promise.all(userPromises)).filter(Boolean)
+    return newList
+  }
 })
 
 const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3000
