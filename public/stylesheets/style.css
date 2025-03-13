@@ -144,7 +144,7 @@ body {
   margin-top: 10px;
   font-size: 14px;
   font-weight: bold;
-  color:navy
+  color:darkslategrey
 }
 
 .buttonList{
@@ -155,9 +155,9 @@ body {
   padding:3px;
   font-size:14px;
   font-weight: bold;
-  color: #5AD7FA;;
-  background-color: #69777A;
+  color: #fff;;
+  background-color: #5AD7FA;
   border:none;
-  border-radius: 8px;
+  border-radius: 5px;
   text-decoration: none;
 }

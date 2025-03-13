@@ -57,13 +57,13 @@
     const id = typingBox.children[2].value
 
 
-    socket.on('online', onlineCounts => {
-      counts.innerText = onlineCounts
+    socket.on('online', () => {
       if (account) socket.emit('userOn', account)
     })
 
     socket.on('showUsers', userList => {
       let usersListHtml = ''
+      const onlineCounts = userList.length
       for (let i = 0; i < userList.length; i++) {
         if (id === userList[i].id) {
           usersListHtml +=
@@ -82,6 +82,7 @@
         }
       }
       membersList.innerHTML = usersListHtml
+      counts.innerText = onlineCounts
     })
 
     typingBox.addEventListener('submit', async(event) => {

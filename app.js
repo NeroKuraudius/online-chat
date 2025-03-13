@@ -44,11 +44,9 @@ app.use((req, res, next) => {
 app.use(routes)
 
 // socket
-let onlineCounts = 0
 let onlineUsers = []
 io.on('connection', (socket) => {
-  onlineCounts += 1
-  io.emit('online', onlineCounts)
+  io.emit('online')
 
   let userAccount
   socket.on('userOn', async(account) => {
@@ -78,13 +76,10 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', async() => {
-    onlineCounts = Math.max(0 ,onlineCounts-1)
     const leftUserIndex = onlineUsers.indexOf(userAccount)
     if (leftUserIndex !== -1) onlineUsers.splice(leftUserIndex,1)
     
     const userNameList = await gatherOnlineUsersName(onlineUsers)
-    
-    io.emit('online', onlineCounts)
     io.emit('showUsers', userNameList)
   })
 
