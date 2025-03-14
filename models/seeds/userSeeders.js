@@ -14,6 +14,11 @@ const defaultUsers = [
     account:'testUser2@test.com',
     password: bcrypt.hashSync('abc987',12),
     name: '測試B'
+  },
+  {
+    account: 'testUser4@test.com',
+    password: bcrypt.hashSync('srz7htx'),
+    name: '測試D'
   }
 ]
 
