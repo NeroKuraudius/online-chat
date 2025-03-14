@@ -55,8 +55,8 @@
       hintMsg.hidden = true
     })
 
-    socket.on('ai-response', async(data) =>{
-      await sendMsg(data)
+    socket.on('ai-response', (data) =>{
+      sendMsg(data)
     })
 
     function sendMsg(data){
