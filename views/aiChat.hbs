@@ -40,36 +40,40 @@
       const data = {}
       const hintMsg = document.getElementById('hint-msg')
       const text = typingBox.children[0]
-      if (text.value !== "" && text.value.trim() !== "") {
-        data[text.name] = text.value
+      const msgContent = text.value.trim()
+      if (msgContent) {
+        data[text.name] = msgContent
+        data['role'] = 'user'
       } else {
         hintMsg.hidden = false
+        return ;
       }
 
-      if (data.msg !== undefined) {
-        socket.emit('private-message', data)
-        hintMsg.hidden = true
-      }
+      sendMsg(data)
+      socket.emit('private-message', data)
       text.value = ''
+      hintMsg.hidden = true
     })
 
-    socket.on('ai-response',data=>{
+    socket.on('ai-response', async(data) =>{
+      await sendMsg(data)
+    })
+
+    function sendMsg(data){
       const msgBox = document.createElement("div")
       const singleMsg = document.createElement('div')
 
-      if (data?.role === 'assistant') { // if data存在但沒有role?
-        msgBox.className = "messages mt-3"
-        msgBox.style = "width:100%"
-        singleMsg.innerText = `${data.reply}`
-      } else {
-        msgBox.className = "messages mt-3"
-        msgBox.style = "text-align:end;width:100%"
-        singleMsg.innerText = `${data.reply}`
-      }
+      msgBox.className = "messages mt-3"
+      msgBox.style.width = "100%"
+      msgBox.style.textAlign = (data.role === "assistant") ? "start" : "end"
+
+      singleMsg.style.backgroundColor = (data.role === "assistant") ? "white" : "#F2F2F2"
+      singleMsg.style.borderRadius = "5px"
+      singleMsg.innerText = data.msg.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
       msgBox.appendChild(singleMsg)
       msg.appendChild(msgBox)
-    })
+    }
   })
 </script>
 {{/if}}

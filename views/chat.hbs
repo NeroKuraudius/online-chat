@@ -92,17 +92,17 @@
       const data = {}
       const hintMsg = document.getElementById('hint-msg')
       const text = typingBox.children[3]
-      if (text.value !== "" && text.value.trim() !== "") {
+      const msgContent = text.value.trim()
+      if (msgContent) {
         data[speaker.name] = speaker.value
         data[text.name] = text.value
       } else {
         hintMsg.hidden = false
+        return ;
       }
 
-      if (data.msg !== undefined) {
-        socket.emit('send', data)
-        hintMsg.hidden = true
-      }
+      socket.emit('send', data)
+      hintMsg.hidden = true
       text.value = ''
     })
 
@@ -113,7 +113,7 @@
 
       if (data.name === speaker.value) {
         msgBox.className = "messages mt-3"
-        msgBox.style = "text-align:end;width:100%"
+        msgBox.style = "text-align:end;width:100%;background-color:#F2F2F2;border-radius:5px"
         singleMsg.innerText = `${data.msg}`
       } else if (data.name === '系統'){
         msgBox.className = "messages mt-3"

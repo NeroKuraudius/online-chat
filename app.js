@@ -46,6 +46,8 @@ app.use(routes)
 // socket for public
 let onlineUsers = []
 io.on('connection', (socket) => {
+  console.log(`=> User ${socket.id} connected into chat`)
+
   io.emit('online')
 
   let userAccount
@@ -79,6 +81,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', async() => {
+    console.log(`##### User ${socket.id} disconnected from chat`)
     const leftUserIndex = onlineUsers.indexOf(userAccount)
     if (leftUserIndex !== -1) onlineUsers.splice(leftUserIndex,1)
     
@@ -107,27 +110,29 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
 const aiChat = io.of('/ai-chat')
 const userConversations = {}
 aiChat.on('connection',(socket)=>{
+  console.log(`↓↓ User ${socket.id} start chatting with AI`)
+
   userConversations[socket.id] = []
 
   socket.on('private-message', async( {msg} )=>{
     userConversations[socket.id].push({ role: 'user', content: msg })
     try{
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5',
-        messages: userConversations[socket.id],
+        model: 'gpt-4',
+        messages: userConversations[socket.id]
       })
 
       const aiReply = response.choices[0].message.content
       userConversations[socket.id].push({ role:'assistant', content: aiReply })
 
-      socket.emit('ai-response',{ role:'assistant', reply: aiReply })
+      socket.emit('ai-response',{ role:'assistant', msg: aiReply })
     }catch(err){
       console.log('Error on aiChat connection:', err)
     }
   })
 
   socket.on('disconnect',()=>{
-    console.log(`User ${socket.id} disconnected from AI chat`)
+    console.log(`$$$$$$ User ${socket.id} left AI chat`)
     delete userConversations[socket.id]
   })
 })
