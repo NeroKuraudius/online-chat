@@ -4,7 +4,7 @@
   "main": "app.js",
   "private": true,
   "engines": {
-    "node": "18.12.1"
+    "node": ">=22.23.4"
   },
   "scripts": {
     "start": "node app.js",
